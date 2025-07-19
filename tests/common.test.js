@@ -12,7 +12,7 @@ describe("Unit Test", () => {
   });
 
   describe("src/setup.js", () => {
-    it("should connect and close all dbs", async () => {
+    it("should connect and close all DBs", async () => {
       const { connectAllDb, closeAllDb } = await import("../src/db/setup.js");
       await connectAllDb();
       await closeAllDb();
