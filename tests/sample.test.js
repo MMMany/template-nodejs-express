@@ -3,17 +3,21 @@
 import { jest } from "@jest/globals";
 import request from "supertest";
 import app from "../src/app.js";
+import { connectAllDb, closeAllDb } from "../src/db/setup.js";
 
 describe("Sample Test", () => {
-  beforeAll(async () => {});
+  beforeAll(async () => {
+    await connectAllDb();
+  });
 
   afterAll(async () => {
-    jest.restoreAllMocks();
+    await closeAllDb();
   });
 
   beforeEach(async () => {});
 
   afterEach(async () => {
+    jest.restoreAllMocks();
     jest.resetModules();
   });
 
