@@ -1,7 +1,7 @@
 // src/routes/sample.js
 
 import { Router } from "express";
-import validateBody from "../middlewares/validateBody";
+import validateBody from "#src/middlewares/validateBody.js";
 import Joi from "joi";
 
 const router = Router();

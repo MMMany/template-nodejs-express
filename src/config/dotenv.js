@@ -4,8 +4,10 @@ import fs from "fs-extra";
 import { config } from "dotenv";
 import { expand } from "dotenv-expand";
 
+const requiredEnv = ["PORT"];
+
 /* istanbul ignore next */
-function dotenvSetup() {
+export function dotenvSetup() {
   if (!process.env.NODE_ENV) {
     throw new Error("NODE_ENV is not defined");
   }
@@ -31,25 +33,19 @@ function dotenvSetup() {
     );
   });
 
-  const requiredEnv = ["PORT"].reduce((acc, it) => {
+  const required = requiredEnv.reduce((acc, it) => {
     acc[it] = process.env[it];
     return acc;
   }, {});
+  const hasAllRequired = Object.values(required).every(Boolean);
 
-  if (Object.values(requiredEnv).every(Boolean) === false) {
-    const missingEnv = Object.entries(requiredEnv).reduce(
-      (acc, [key, value]) => {
-        if (value === undefined) {
-          acc.push(key);
-        }
-        return acc;
-      },
-      [],
-    );
-    throw new Error(
-      `Missing required environment variables: ${missingEnv.join(", ")}`,
-    );
+  if (!hasAllRequired) {
+    const missing = Object.entries(required).reduce((acc, [key, value]) => {
+      if (value === undefined) {
+        acc.push(key);
+      }
+      return acc;
+    }, []);
+    throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
   }
 }
-
-export { dotenvSetup };

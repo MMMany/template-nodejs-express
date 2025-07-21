@@ -2,8 +2,8 @@
 
 import { jest } from "@jest/globals";
 import request from "supertest";
-import app from "../src/app.js";
-import { connectAllDb, closeAllDb } from "../src/db/setup.js";
+import app from "#src/main.js";
+import { connectAllDb, closeAllDb } from "#src/db/setup.js";
 
 describe("Sample Test", () => {
   beforeAll(async () => {

@@ -1,6 +1,6 @@
 // src/app.js
 
-import { dotenvSetup } from "./config.js";
+import { dotenvSetup } from "./config/dotenv.js";
 dotenvSetup();
 
 import express from "express";
@@ -37,9 +37,7 @@ if (NODE_ENV !== "test") {
     function gracefulShutdown(signal) {
       console.log(`Received ${signal}. Closing server...`);
       const shutdownTimeout = setTimeout(() => {
-        console.error(
-          "Could not close shutdown gracefully in 10 seconds, forcefully shutting down",
-        );
+        console.error("Could not close shutdown gracefully in 10 seconds, forcefully shutting down");
         process.exit(1);
       }, 10000);
 
@@ -59,9 +57,7 @@ if (NODE_ENV !== "test") {
 
     const signals = ["SIGINT", "SIGTERM", "SIGQUIT"];
     signals.forEach((signal) => {
-      process.on(signal, () => {
-        gracefulShutdown(signal);
-      });
+      process.on(signal, () => gracefulShutdown(signal));
     });
   });
 }
