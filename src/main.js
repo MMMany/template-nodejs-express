@@ -1,11 +1,9 @@
-// src/app.js
-
-import { dotenvSetup } from "./config/dotenv.js";
+const { dotenvSetup } = require("./config/dotenv");
 dotenvSetup();
 
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
 
 const NODE_ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT;
@@ -17,15 +15,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
 
-import sampleRouter from "./routes/sample.js";
-app.use("/api/sample", sampleRouter);
+// const sampleRouter = require("./routes/sample");
+// app.use("/api/sample", sampleRouter);
 
 app.use((req, res) => {
   console.info(`Not Found :: ${req.method} ${req.url} from ${req.ip}`);
   res.sendStatus(404);
 });
 
-import { connectAllDb, closeAllDb } from "./db/setup.js";
+const { connectAllDb, closeAllDb } = require("./db/setup");
 
 /* istanbul ignore next */
 if (NODE_ENV !== "test") {
@@ -62,4 +60,4 @@ if (NODE_ENV !== "test") {
   });
 }
 
-export default app;
+module.exports = app;

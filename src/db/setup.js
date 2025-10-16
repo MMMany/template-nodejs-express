@@ -1,9 +1,10 @@
-// src/db/setup.js
+const { connectMongoose, disconnectMongoose } = require("./mongoose");
 
 async function connectAllDb() {
   /**
    * connect all DBs here
    */
+  await Promise.all([connectMongoose()]);
 }
 
 /**
@@ -13,6 +14,7 @@ async function closeAllDb() {
   /**
    * class all DBs here
    */
+  await Promise.all([disconnectMongoose()]);
 }
 
-export { connectAllDb, closeAllDb };
+module.exports = { connectAllDb, closeAllDb };

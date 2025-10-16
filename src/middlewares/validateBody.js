@@ -1,12 +1,10 @@
-// src/middlewares/validateBody.js
-
 /**
  * a middleware for validate "req.body"
  * @param {import('joi').ObjectSchema} schema
- * @param {import('joi').ValidationOptions} options
+ * @param {import('joi').ValidationOptions} [options]
  */
-function validateBody(schema, options) {
-  /** @type {import('express').RequestHandler} */
+function validateBody(schema, options = {}) {
+  /** @type {RequestHandler} */
   return (req, res, next) => {
     const { error } = schema.validate(req.body, options);
     if (error) {
@@ -16,4 +14,4 @@ function validateBody(schema, options) {
   };
 }
 
-export default validateBody;
+module.exports = validateBody;

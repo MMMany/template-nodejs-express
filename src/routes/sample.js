@@ -1,8 +1,6 @@
-// src/routes/sample.js
-
-import { Router } from "express";
-import validateBody from "#src/middlewares/validateBody.js";
-import Joi from "joi";
+const { Router } = require("express");
+const validateBody = require("#/middlewares/validateBody");
+const Joi = require("joi");
 
 const router = Router();
 
@@ -23,4 +21,4 @@ router.post(
   },
 );
 
-export default router;
+module.exports = router;

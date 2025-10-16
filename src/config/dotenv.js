@@ -1,13 +1,11 @@
-// src/config.js
-
-import fs from "fs-extra";
-import { config } from "dotenv";
-import { expand } from "dotenv-expand";
+const fs = require("fs-extra");
+const { config } = require("dotenv");
+const { expand } = require("dotenv-expand");
 
 const requiredEnv = ["PORT"];
 
 /* istanbul ignore next */
-export function dotenvSetup() {
+function dotenvSetup() {
   if (!process.env.NODE_ENV) {
     throw new Error("NODE_ENV is not defined");
   }
@@ -49,3 +47,7 @@ export function dotenvSetup() {
     throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
   }
 }
+
+module.exports = {
+  dotenvSetup,
+};
