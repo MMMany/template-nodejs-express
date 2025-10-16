@@ -4,6 +4,8 @@ const logger = require("#/shared/logger");
 const NODE_ENV = process.env.NODE_ENV;
 const MONGO_URI = process.env.MONGO_URI;
 
+let terminate = false;
+
 async function connectMongoose() {
   if (NODE_ENV !== "production") {
     mongoose.set("debug", true);
@@ -15,7 +17,7 @@ async function connectMongoose() {
 
   mongoose.connection.on("disconnected", () => {
     logger.warn(`Mongoose disconnected. reconnecting...`);
-    connectMongoose();
+    if (!terminate) connectMongoose();
   });
 
   try {
@@ -26,7 +28,8 @@ async function connectMongoose() {
 }
 
 async function disconnectMongoose() {
-  logger.warn(`Mongoose disconnect not support.`);
+  terminate = true;
+  await mongoose.disconnect();
 }
 
 module.exports = {
