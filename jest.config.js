@@ -14,6 +14,9 @@ const config = {
   // setupFilesAfterEnv: ["<rootDir>/tests/setup.js"],
   collectCoverage: true,
   coverageDirectory: "coverage",
+  moduleNameMapper: {
+    "^#/(.*)$": "<rootDir>/src/$1",
+  },
 };
 
 module.exports = config;
