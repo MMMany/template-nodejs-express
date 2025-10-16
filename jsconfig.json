@@ -10,8 +10,9 @@
     "allowJs": true,
     "skipLibCheck": true,
     "paths": {
-      "#/*": ["./src/*"]
+      "#/*": ["src/*"]
     }
   },
-  "include": ["src", "tests", "types"]
+  "include": ["src/**/*", "tests/**/*", "types/**/*"],
+  "exclude": ["node_modules"]
 }

@@ -13,12 +13,12 @@ const PORT = process.env.PORT;
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(cookieParser());
 
-const sampleRouter = require("./routes/sample");
-app.use("/api/sample", sampleRouter);
+app.use("/api/sample", require("./routes/sample"));
+app.use("/api/auth", require("./routes/auth"));
 
 app.use((req, res) => {
   logger.info(`Not Found :: ${req.method} ${req.url} from ${req.ip}`);

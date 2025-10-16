@@ -1,7 +1,7 @@
 const { Model } = require("mongoose");
-const UserSchema = require("#/schema/UserSchema");
+const userSchema = require("#/schema/userSchema");
 
 /** @type {import('mongoose').Model} */
-const User = new Model("User", UserSchema);
+const User = new Model("User", userSchema);
 
 module.exports = User;

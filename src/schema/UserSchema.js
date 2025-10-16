@@ -1,6 +1,6 @@
 const { Schema } = require("mongoose");
 
-const UserSchema = new Schema(
+const userSchema = new Schema(
   {
     userId: { type: String, required: true, unique: true, index: true },
     name: { type: String, required: true },
@@ -16,4 +16,4 @@ const UserSchema = new Schema(
   },
 );
 
-module.exports = UserSchema;
+module.exports = userSchema;

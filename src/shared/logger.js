@@ -13,6 +13,7 @@ const levelShort = {
   silly: "S",
 };
 
+/* istanbul ignore next */
 const logger = createLogger({
   level: isPRD ? "info" : "debug",
   format: format.combine(
