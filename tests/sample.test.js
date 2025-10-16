@@ -1,4 +1,3 @@
-const { jest } = require("@jest/globals");
 const request = require("supertest");
 const app = require("#/main");
 const { connectAllDb, closeAllDb } = require("#/db/setup");

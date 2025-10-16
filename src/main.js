@@ -1,9 +1,11 @@
+require("module-alias/register");
 const { dotenvSetup } = require("./config/dotenv");
 dotenvSetup();
 
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const logger = require("./shared/logger");
 
 const NODE_ENV = process.env.NODE_ENV;
 const PORT = process.env.PORT;
@@ -15,11 +17,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
 
-// const sampleRouter = require("./routes/sample");
-// app.use("/api/sample", sampleRouter);
+const sampleRouter = require("./routes/sample");
+app.use("/api/sample", sampleRouter);
 
 app.use((req, res) => {
-  console.info(`Not Found :: ${req.method} ${req.url} from ${req.ip}`);
+  logger.info(`Not Found :: ${req.method} ${req.url} from ${req.ip}`);
   res.sendStatus(404);
 });
 
@@ -29,13 +31,13 @@ const { connectAllDb, closeAllDb } = require("./db/setup");
 if (NODE_ENV !== "test") {
   connectAllDb().then(() => {
     const server = app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      logger.debug(`Server is running on port ${PORT}`);
     });
 
     function gracefulShutdown(signal) {
-      console.log(`Received ${signal}. Closing server...`);
+      logger.debug(`Received ${signal}. Closing server...`);
       const shutdownTimeout = setTimeout(() => {
-        console.error("Could not close shutdown gracefully in 10 seconds, forcefully shutting down");
+        logger.error("Could not close shutdown gracefully in 10 seconds, forcefully shutting down");
         process.exit(1);
       }, 10000);
 
@@ -43,12 +45,12 @@ if (NODE_ENV !== "test") {
         .then(() => {
           clearTimeout(shutdownTimeout);
           server.close(() => {
-            console.log("Server closed");
+            logger.debug("Server closed");
             process.exit(0);
           });
         })
         .catch((err) => {
-          console.error(err);
+          logger.error(err);
           process.exit(1);
         });
     }

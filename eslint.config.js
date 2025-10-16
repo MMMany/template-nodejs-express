@@ -1,28 +1,24 @@
-// eslint.config.js
+// const { globalIgnores } = require("eslint/config");
+const globals = require("globals");
+const js = require("@eslint/js");
+const configPrettier = require("eslint-config-prettier");
+const pluginJest = require("eslint-plugin-jest");
 
-import { defineConfig } from "eslint/config";
-import globals from "globals";
-import js from "@eslint/js";
-import configPrettier from "eslint-config-prettier";
-import pluginJest from "eslint-plugin-jest";
-
-export default defineConfig([
-  {
-    ignores: ["node_modules/"],
-  },
+module.exports = [
   js.configs.recommended,
+  configPrettier,
   {
+    files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: { ...globals.node },
+      ecmaVersion: 2022,
+      sourceType: "commonjs",
+      globals: { ...globals.node, ...globals.worker },
     },
     rules: {
       "no-unused-vars": ["warn", { args: "none" }],
       "no-console": "off",
     },
   },
-  configPrettier,
   {
     files: ["tests/**/*.js"],
     plugins: { jest: pluginJest },
@@ -35,4 +31,4 @@ export default defineConfig([
       "jest/valid-expect": "error",
     },
   },
-]);
+];

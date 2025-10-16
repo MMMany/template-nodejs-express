@@ -1,1 +1,1 @@
-// tests/setup.js
+require("module-alias/register");

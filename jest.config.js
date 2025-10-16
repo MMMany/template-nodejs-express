@@ -10,10 +10,10 @@ const config = {
   testPathIgnorePatterns: ["/node_modules/"],
   testTimeout: 20000,
   verbose: true,
-  transform: {}, // for ESM
-  setupFiles: ["./tests/setup.js"],
+  setupFiles: ["<rootDir>/tests/setup.js"],
+  // setupFilesAfterEnv: ["<rootDir>/tests/setup.js"],
   collectCoverage: true,
   coverageDirectory: "coverage",
 };
 
-export default config;
+module.exports = config;
