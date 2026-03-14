@@ -1,7 +1,7 @@
 const { createLogger, format, transports } = require("winston");
 const util = require("util");
 
-const isPRD = process.env.NODE_ENV === "production";
+const { IS_PRD, IS_TEST } = require("./constants");
 
 const levelShort = {
   error: "E",
@@ -15,7 +15,8 @@ const levelShort = {
 
 /* istanbul ignore next */
 const logger = createLogger({
-  level: isPRD ? "info" : "debug",
+  level: IS_PRD ? "info" : "debug",
+  silent: IS_TEST,
   format: format.combine(
     format.colorize(),
     format.timestamp({ format: "YYYY-MM-DD HH:mm:ss.SSS" }),
@@ -26,11 +27,7 @@ const logger = createLogger({
       const coloredLevel = info.level.replace(plainLevel, shortLevel);
 
       if (info instanceof Error) {
-        if (!isPRD) {
-          info.message = info.stack;
-        } else {
-          info.message = `${info.name}: ${info.message}`;
-        }
+        info.message = IS_PRD ? `${info.name}: ${info.message}` : info.stack;
       }
 
       let extra = "";
@@ -38,7 +35,7 @@ const logger = createLogger({
         // @ts-ignore
         info[Symbol.for("splat")].forEach((v) => {
           if (v instanceof Error) {
-            extra += "\n" + (isPRD ? `${v.name}: ${v.message}` : v.stack);
+            extra += "\n" + (IS_PRD ? `${v.name}: ${v.message}` : v.stack);
           } else if (typeof v === "object") {
             extra += "\n" + util.inspect(v, { depth: null, colors: true, compact: true });
           } else {

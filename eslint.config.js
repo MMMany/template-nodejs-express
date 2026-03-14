@@ -1,4 +1,3 @@
-// const { globalIgnores } = require("eslint/config");
 const globals = require("globals");
 const js = require("@eslint/js");
 const configPrettier = require("eslint-config-prettier");

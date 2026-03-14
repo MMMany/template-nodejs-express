@@ -1,34 +1,38 @@
-require("module-alias/register");
 const { dotenvSetup } = require("./config/dotenv");
 dotenvSetup();
 
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const logger = require("./shared/logger");
+const logger = require("./utils/logger");
 
-const NODE_ENV = process.env.NODE_ENV;
+const { IS_TEST } = require("./utils/constants");
+
 const PORT = process.env.PORT;
 
 const app = express();
+
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url} from ${req.ip}`);
+  next();
+});
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/api/sample", require("./routes/sample"));
-app.use("/api/auth", require("./routes/auth"));
+app.use("/api/users", require("./modules/users").router);
 
 app.use((req, res) => {
-  logger.info(`Not Found :: ${req.method} ${req.url} from ${req.ip}`);
-  res.sendStatus(404);
+  logger.warn(`Unknown request :: ${req.method} ${req.url} from ${req.ip}`);
+  res.sendStatus(400);
 });
 
-const { connectAllDb, closeAllDb } = require("./db/setup");
+const { connectAllDb, closeAllDb } = require("./db");
 
 /* istanbul ignore next */
-if (NODE_ENV !== "test") {
+if (!IS_TEST) {
   connectAllDb().then(() => {
     const server = app.listen(PORT, () => {
       logger.debug(`Server is running on port ${PORT}`);

@@ -17,19 +17,19 @@ function dotenvSetup() {
     NODE_ENV !== "test" && ".env.local",
     `.env.${NODE_ENV}`,
     `.env.${NODE_ENV}.local`,
-  ].filter(fs.existsSync);
+  ].filter((it) => fs.existsSync(it));
 
   dotenvFiles.forEach((file) => {
-    expand(
-      config({
-        path: file,
-        override: true,
-        debug: NODE_ENV === "development",
-        quiet: NODE_ENV !== "development",
-        encoding: "utf8",
-      }),
-    );
+    config({
+      path: file,
+      override: true,
+      debug: NODE_ENV === "development",
+      quiet: NODE_ENV !== "development",
+      encoding: "utf8",
+    });
   });
+
+  expand({ parsed: process.env });
 
   const required = requiredEnv.reduce((acc, it) => {
     acc[it] = process.env[it];
