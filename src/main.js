@@ -12,7 +12,7 @@ const PORT = process.env.PORT;
 
 const app = express();
 
-app.use((req, res, next) => {
+app.use((req, _res, next) => {
   logger.info(`${req.method} ${req.url} from ${req.ip}`);
   next();
 });
@@ -31,7 +31,7 @@ app.use((req, res) => {
 
 const { connectAllDb, closeAllDb } = require("./db");
 
-/* istanbul ignore next */
+/* istanbul ignore if */
 if (!IS_TEST) {
   connectAllDb().then(() => {
     const server = app.listen(PORT, () => {

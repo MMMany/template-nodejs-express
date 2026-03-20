@@ -1,9 +1,19 @@
 const User = require("./models/user.model");
+const logger = require("#/utils/logger");
+const { IS_DEV } = require("#/utils/constants");
 
 /** @type {UserModule.UserRepository['createUser']} */
 const createUser = async (data) => {
-  const user = await User.create(data);
-  return user?.toObject();
+  try {
+    const user = await User.create(data);
+    return user?.toObject();
+  } catch (err) /* istanbul ignore next */ {
+    logger.error(`failed creating new item : ${err.message}`);
+    if (IS_DEV) {
+      logger.error(err.stack || `${err.name}: ${err.message}`);
+    }
+    return null;
+  }
 };
 
 /** @type {UserModule.UserRepository['findUsers']} */

@@ -1,11 +1,11 @@
 const { connectMongoose, disconnectMongoose } = require("./mongoose");
 
 async function connectAllDb() {
-  await Promise.all([connectMongoose()]);
+  await connectMongoose();
 }
 
 async function closeAllDb() {
-  await Promise.all([disconnectMongoose()]);
+  await disconnectMongoose();
 }
 
 module.exports = { connectAllDb, closeAllDb };

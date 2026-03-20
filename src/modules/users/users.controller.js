@@ -3,12 +3,18 @@ const logger = require("#/utils/logger");
 const { IS_DEV } = require("#/utils/constants");
 
 /** @type {UserModule.UserController['createUser']} */
-const createUser = ({ service }) => {
-  return async (req, res) => {
+const createUser =
+  ({ service }) =>
+  async (req, res) => {
     try {
       const data = req.body;
       const result = await service(data);
-      res.json(result);
+      if (result) {
+        res.json(result);
+      } else {
+        logger.warn("failed creating user");
+        res.sendStatus(400);
+      }
     } catch (err) /* istanbul ignore next */ {
       logger.error(`Error creating user : ${err.message}`);
       if (IS_DEV) {
@@ -17,7 +23,6 @@ const createUser = ({ service }) => {
       res.sendStatus(500);
     }
   };
-};
 
 /** @type {UserModule.UserController['findUsers']} */
 const findUsers = ({ service }) => {
@@ -26,7 +31,7 @@ const findUsers = ({ service }) => {
       const filter = req.query;
       const result = await service(filter);
       if (isEmpty(result)) {
-        logger.warn(`User not found: failed finding users`);
+        logger.warn(`User not found`);
         res.sendStatus(404);
       } else {
         res.json(result);
@@ -45,10 +50,10 @@ const findUsers = ({ service }) => {
 const userProfile = ({ service }) => {
   return async (req, res) => {
     try {
-      const uid = req.params.uid;
-      const result = await service(uid);
+      const id = req.params.id;
+      const result = await service(id);
       if (isEmpty(result)) {
-        logger.warn(`User "${uid}" not found: failed finding user profile`);
+        logger.warn(`User "${id}" not found`);
         res.sendStatus(404);
       } else {
         res.json(result);
@@ -67,7 +72,7 @@ const userProfile = ({ service }) => {
 const updateUserInfo = ({ service }) => {
   return async (req, res) => {
     try {
-      const uid = req.params.uid;
+      const id = req.params.id;
       const data = req.body;
 
       if (isEmpty(data)) {
@@ -76,9 +81,9 @@ const updateUserInfo = ({ service }) => {
         return;
       }
 
-      const result = await service(uid, data);
+      const result = await service(id, data);
       if (isEmpty(result)) {
-        logger.warn(`User "${uid}" not found: failed updating user info`);
+        logger.warn(`User "${id}" not found`);
         res.sendStatus(404);
       } else {
         const notModified = isEqual(result.old, result.new);
@@ -102,17 +107,22 @@ const updateUserInfo = ({ service }) => {
 const updateUserPermissions = ({ service }) => {
   return async (req, res) => {
     try {
-      const uid = req.params.uid;
+      const id = req.params.id;
       const permsOperation = req.body;
       if (isEmpty(permsOperation?.add) && isEmpty(permsOperation?.remove)) {
         logger.warn(`No data`);
         res.sendStatus(400);
         return;
       }
+      if (isEqual(permsOperation?.add, permsOperation?.remove)) {
+        logger.warn(`Invalid body: no change`);
+        res.sendStatus(400);
+        return;
+      }
 
-      const result = await service(uid, permsOperation);
-      if (isEmpty(result) || isEmpty(result.new)) {
-        logger.warn(`User "${uid}" not found: failed updating user permissions`);
+      const result = await service(id, permsOperation);
+      if (isEmpty(result)) {
+        logger.warn(`User "${id}" not found`);
         res.sendStatus(404);
       } else {
         const notModified = isEqual(result.old?.permissions, result.new?.permissions);
@@ -136,11 +146,11 @@ const updateUserPermissions = ({ service }) => {
 const deleteUser = ({ service }) => {
   return async (req, res) => {
     try {
-      const uid = req.params.uid;
-      const result = await service(uid);
+      const id = req.params.id;
+      const result = await service(id);
       if (isEmpty(result)) {
-        logger.warn(`User "${uid}" not found: failed deleting user`);
-        res.sendStatus(404);
+        logger.warn(`User "${id}" not found`);
+        res.sendStatus(400);
       } else {
         res.json(result);
       }

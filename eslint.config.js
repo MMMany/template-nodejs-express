@@ -7,21 +7,54 @@ module.exports = [
   js.configs.recommended,
   configPrettier,
   {
-    files: ["**/*.js"],
+    files: ["*.js"],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "commonjs",
       globals: { ...globals.node, ...globals.worker },
     },
     rules: {
-      "no-unused-vars": ["warn", { args: "none" }],
+      "no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "no-console": "off",
+    },
+  },
+  {
+    files: ["src/**/*.js"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "commonjs",
+      globals: { ...globals.node, ...globals.worker },
+    },
+    rules: {
+      "no-unused-vars": [
+        "error",
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "no-console": "off",
     },
   },
   {
     files: ["tests/**/*.js"],
-    plugins: { jest: pluginJest },
-    languageOptions: { globals: pluginJest.environments.globals.globals },
+    plugins: {
+      jest: pluginJest,
+    },
+    languageOptions: {
+      globals: {
+        ...globals.node,
+        ...pluginJest.environments.globals.globals,
+      },
+    },
     rules: {
       "jest/no-disabled-tests": "warn",
       "jest/no-focused-tests": "error",

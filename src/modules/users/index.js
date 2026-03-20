@@ -1,50 +1,51 @@
 const router = require("express").Router();
+const z = require("zod");
 
-const controller = require("./users.controller");
+//==========================================================================================
+// Setup
+//==========================================================================================
 const repository = require("./users.repository");
-const createUserService = require("./services/create-user.service");
-const findUserService = require("./services/find-user.service");
-const updateUserService = require("./services/update-user.service");
-const deleteUserService = require("./services/delete-user.service");
+const service = {
+  createUser: require("./services").createUser({ repository }),
+  findUsers: require("./services").findUsers({ repository }),
+  findUserById: require("./services").findUserById({ repository }),
+  updateUserInfo: require("./services").updateUserInfo({ repository }),
+  updateUserPermissions: require("./services").updateUserPermissions({ repository }),
+  deleteUser: require("./services").deleteUser({ repository }),
+};
+const controller = {
+  createUser: require("./users.controller").createUser({ service: service.createUser }),
+  findUsers: require("./users.controller").findUsers({ service: service.findUsers }),
+  userProfile: require("./users.controller").userProfile({ service: service.findUserById }),
+  updateUserInfo: require("./users.controller").updateUserInfo({ service: service.updateUserInfo }),
+  updateUserPermissions: require("./users.controller").updateUserPermissions({
+    service: service.updateUserPermissions,
+  }),
+  deleteUser: require("./users.controller").deleteUser({ service: service.deleteUser }),
+};
 
 const { validateBody, validateQuery, validateParams } = require("#/middlewares/validator");
+const { createUserDTO, findUsersQuery, updateUserInfoDTO, idSchema, updateUserPermissionsDTO } = require("./users.dto");
+const idParamsSchema = z.object({ id: idSchema });
+const validator = {
+  create: [validateBody(createUserDTO)],
+  find: [validateQuery(findUsersQuery)],
+  profile: [validateParams(idParamsSchema)],
+  updateProfile: [validateParams(idParamsSchema), validateBody(updateUserInfoDTO)],
+  updatePermissions: [validateParams(idParamsSchema), validateBody(updateUserPermissionsDTO)],
+  delete: [validateParams(idParamsSchema)],
+};
 
-const dto = require("./users.dto");
-
-router.post(
-  "/",
-  validateBody(dto.createUserDTO),
-  controller.createUser({ service: createUserService.createUser({ repository }) }),
-);
-router.get(
-  "/",
-  validateQuery(dto.findUsersDTO),
-  controller.findUsers({ service: findUserService.findUsers({ repository }) }),
-);
-router.get(
-  "/:uid",
-  validateParams(dto.uidParamsSchema),
-  controller.userProfile({ service: findUserService.findUserByUid({ repository }) }),
-);
-router.patch(
-  "/:uid",
-  validateParams(dto.uidParamsSchema),
-  validateBody(dto.updateUserInfoDTO.nullish()),
-  controller.updateUserInfo({ service: updateUserService.updateUserInfo({ repository }) }),
-);
-router.patch(
-  "/:uid/permissions",
-  validateParams(dto.uidParamsSchema),
-  validateBody(dto.updateUserPermissionsDTO.nullish()),
-  controller.updateUserPermissions({ service: updateUserService.updateUserPermissions({ repository }) }),
-);
-router.delete(
-  "/:uid",
-  validateParams(dto.uidParamsSchema),
-  controller.deleteUser({ service: deleteUserService.deleteUser({ repository }) }),
-);
+//==========================================================================================
+// Routing
+//==========================================================================================
+router.post("/", ...validator.create, controller.createUser);
+router.get("/", ...validator.find, controller.findUsers);
+router.get("/:id", ...validator.profile, controller.userProfile);
+router.patch("/:id", ...validator.updateProfile, controller.updateUserInfo);
+router.patch("/:id/permissions", ...validator.updatePermissions, controller.updateUserPermissions);
+router.delete("/:id", ...validator.delete, controller.deleteUser);
 
 module.exports = {
   router,
-  userProfileService: findUserService.findUserByUid({ repository }),
 };

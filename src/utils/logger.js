@@ -1,7 +1,10 @@
+/* istanbul ignore file */
 const { createLogger, format, transports } = require("winston");
 const util = require("util");
 
 const { IS_PRD, IS_TEST } = require("./constants");
+
+const TEST_VERBOSE = process.env.TEST_VERBOSE === "true";
 
 const levelShort = {
   error: "E",
@@ -13,39 +16,42 @@ const levelShort = {
   silly: "S",
 };
 
-/* istanbul ignore next */
 const logger = createLogger({
   level: IS_PRD ? "info" : "debug",
-  silent: IS_TEST,
+  silent: IS_TEST && !TEST_VERBOSE,
   format: format.combine(
     format.colorize(),
     format.timestamp({ format: "YYYY-MM-DD HH:mm:ss.SSS" }),
-    format.printf((info) => {
-      // eslint-disable-next-line no-control-regex
-      const plainLevel = info.level.replace(/\u001b\[.*?m/g, "");
-      const shortLevel = levelShort[plainLevel] || plainLevel[0].toUpperCase();
-      const coloredLevel = info.level.replace(plainLevel, shortLevel);
+    format.printf(
+      /** @param {import('winston').Logform.TransformableInfo & { timestamp: string, name: string, message: string, stack: string }} info */
+      ({ timestamp, level, name, message, stack, ...others }) => {
+        // eslint-disable-next-line no-control-regex
+        const plainLevel = level.replaceAll(/\u001b\[.*?m/g, "");
+        const shortLevel = levelShort[plainLevel] || plainLevel[0].toUpperCase();
+        const coloredLevel = level.replace(plainLevel, shortLevel);
 
-      if (info instanceof Error) {
-        info.message = IS_PRD ? `${info.name}: ${info.message}` : info.stack;
-      }
+        let msg = message;
+        if (stack) {
+          msg = IS_PRD ? `${name}: ${message}` : stack;
+        }
 
-      let extra = "";
-      if (info[Symbol.for("splat")]) {
-        // @ts-ignore
-        info[Symbol.for("splat")].forEach((v) => {
-          if (v instanceof Error) {
-            extra += "\n" + (IS_PRD ? `${v.name}: ${v.message}` : v.stack);
-          } else if (typeof v === "object") {
-            extra += "\n" + util.inspect(v, { depth: null, colors: true, compact: true });
-          } else {
-            extra += ` ${v}`;
-          }
-        });
-      }
+        let extra = "";
+        const splat = others[Symbol.for("splat")];
+        if (Array.isArray(splat)) {
+          splat.forEach((v) => {
+            if (v instanceof Error) {
+              extra += "\n" + (IS_PRD ? `${v.name}: ${v.message}` : v.stack);
+            } else if (typeof v === "object") {
+              extra += "\n" + util.inspect(v, { depth: null, colors: true, compact: true });
+            } else {
+              extra += ` ${v}`;
+            }
+          });
+        }
 
-      return `[${info.timestamp}][${coloredLevel}] ${info.message}${extra}`.trim();
-    }),
+        return `[${timestamp}][${coloredLevel}] ${msg}${extra}`.trim();
+      },
+    ),
   ),
   transports: [new transports.Console()],
 });

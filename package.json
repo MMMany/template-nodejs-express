@@ -5,7 +5,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=development nodemon -r module-alias/register src/main.js",
     "serve": "cross-env NODE_ENV=production node -r module-alias/register src/main.js",
-    "test": "cross-env NODE_ENV=test jest --noStackTrace",
+    "test": "cross-env NODE_ENV=test jest --noStackTrace --bail",
+    "test:ci": "cross-env NODE_ENV=test CI=true jest --noStackTrace --bail --runInBand",
     "lint": "eslint .",
     "format": "prettier --write . && prettier --check .",
     "format:check": "prettier --check .",
