@@ -1,8 +1,10 @@
-const fs = require("fs-extra");
-const { config } = require("dotenv");
-const { expand } = require("dotenv-expand");
+import { existsSync } from "fs";
+import { config } from "dotenv";
+import { expand } from "dotenv-expand";
 
-const requiredEnv = ["PORT"];
+const requiredEnv = ["PORT", "MONGO_HOST", "MONGO_PORT", "MONGO_DBNAME"];
+
+dotenvSetup();
 
 /* istanbul ignore next */
 function dotenvSetup() {
@@ -17,7 +19,7 @@ function dotenvSetup() {
     NODE_ENV !== "test" && ".env.local",
     `.env.${NODE_ENV}`,
     `.env.${NODE_ENV}.local`,
-  ].filter((it) => fs.existsSync(it));
+  ].filter((it) => existsSync(it));
 
   dotenvFiles.forEach((file) => {
     config({
@@ -48,6 +50,4 @@ function dotenvSetup() {
   }
 }
 
-module.exports = {
-  dotenvSetup,
-};
+export default {};

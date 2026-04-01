@@ -1,17 +1,17 @@
-const globals = require("globals");
-const js = require("@eslint/js");
-const configPrettier = require("eslint-config-prettier");
-const pluginJest = require("eslint-plugin-jest");
+import globals from "globals";
+import js from "@eslint/js";
+import configPrettier from "eslint-config-prettier";
+import pluginJest from "eslint-plugin-jest";
 
-module.exports = [
+export default [
   js.configs.recommended,
   configPrettier,
   {
-    files: ["*.js"],
+    files: ["**/*.js"],
     languageOptions: {
       ecmaVersion: 2022,
-      sourceType: "commonjs",
-      globals: { ...globals.node, ...globals.worker },
+      sourceType: "module",
+      globals: { ...globals.node, ...globals.worker, ...globals.es2021 },
     },
     rules: {
       "no-unused-vars": [
@@ -25,37 +25,39 @@ module.exports = [
       "no-console": "off",
     },
   },
-  {
-    files: ["src/**/*.js"],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "commonjs",
-      globals: { ...globals.node, ...globals.worker },
-    },
-    rules: {
-      "no-unused-vars": [
-        "error",
-        {
-          varsIgnorePattern: "^_",
-          argsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-      "no-console": "off",
-    },
-  },
+  // {
+  //   files: ["src/**/*.js"],
+  //   languageOptions: {
+  //     ecmaVersion: 2022,
+  //     sourceType: "commonjs",
+  //     globals: { ...globals.node, ...globals.worker },
+  //   },
+  //   rules: {
+  //     "no-unused-vars": [
+  //       "error",
+  //       {
+  //         varsIgnorePattern: "^_",
+  //         argsIgnorePattern: "^_",
+  //         caughtErrorsIgnorePattern: "^_",
+  //       },
+  //     ],
+  //     "no-console": "off",
+  //   },
+  // },
   {
     files: ["tests/**/*.js"],
     plugins: {
       jest: pluginJest,
     },
     languageOptions: {
+      sourceType: "module",
       globals: {
         ...globals.node,
         ...pluginJest.environments.globals.globals,
       },
     },
     rules: {
+      ...pluginJest.configs.recommended.rules,
       "jest/no-disabled-tests": "warn",
       "jest/no-focused-tests": "error",
       "jest/no-identical-title": "error",

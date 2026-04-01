@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const { IS_PRD } = require("#/utils/constants");
+import mongoose from "mongoose";
+import { IS_PRD } from "#src/shared/utils/constants.js";
 
 const transformOptions = {
   virtuals: true,
@@ -35,4 +35,4 @@ schema.index({ name: 1 });
 /** @type {UserModule.UserModel} */
 const User = mongoose.models.User || mongoose.model("User", schema);
 
-module.exports = User;
+export default User;

@@ -1,7 +1,8 @@
-const request = require("supertest");
-const app = require("#/main");
-const { connectAllDb, closeAllDb } = require("#/db");
-const User = require("#/modules/users/models/user.model");
+import { jest } from "@jest/globals";
+import request from "supertest";
+import { app } from "#src/main.js";
+import { connectAllDb, closeAllDb } from "#src/db/setup.js";
+import User from "#src/modules/users/models/user.model.js";
 
 describe("Users module test", () => {
   const ctx = {
@@ -28,8 +29,7 @@ describe("Users module test", () => {
   beforeEach(async () => {});
 
   afterEach(async () => {
-    jest.restoreAllMocks();
-    jest.resetModules();
+    jest.clearAllMocks();
   });
 
   describe("create new user", () => {

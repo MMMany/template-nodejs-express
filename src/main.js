@@ -1,16 +1,12 @@
-const { dotenvSetup } = require("./config/dotenv");
-dotenvSetup();
+import "./config/dotenv.js";
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import logger from "./shared/utils/logger.js";
+import { IS_TEST } from "./shared/utils/constants.js";
+import { connectAllDb, closeAllDb } from "./db/setup.js";
 
-const express = require("express");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
-const logger = require("./utils/logger");
-
-const { IS_TEST } = require("./utils/constants");
-
-const PORT = process.env.PORT;
-
-const app = express();
+export const app = express();
 
 app.use((req, _res, next) => {
   logger.info(`${req.method} ${req.url} from ${req.ip}`);
@@ -22,18 +18,19 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/api/users", require("./modules/users").router);
+import { router as usersRouter } from "./modules/users/users.module.js";
+app.use("/api/users", usersRouter);
 
 app.use((req, res) => {
   logger.warn(`Unknown request :: ${req.method} ${req.url} from ${req.ip}`);
   res.sendStatus(400);
 });
 
-const { connectAllDb, closeAllDb } = require("./db");
-
 /* istanbul ignore if */
 if (!IS_TEST) {
   connectAllDb().then(() => {
+    const PORT = process.env.PORT;
+
     const server = app.listen(PORT, () => {
       logger.debug(`Server is running on port ${PORT}`);
     });
@@ -65,5 +62,3 @@ if (!IS_TEST) {
     });
   });
 }
-
-module.exports = app;

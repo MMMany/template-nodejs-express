@@ -1,9 +1,9 @@
-const User = require("./models/user.model");
-const logger = require("#/utils/logger");
-const { IS_DEV } = require("#/utils/constants");
+import User from "./models/user.model.js";
+import logger from "#src/shared/utils/logger.js";
+import { IS_DEV } from "#src/shared/utils/constants.js";
 
-/** @type {UserModule.UserRepository['createUser']} */
-const createUser = async (data) => {
+/** @type {UserModule.Repository['createUser']} */
+export const createUser = async (data) => {
   try {
     const user = await User.create(data);
     return user?.toObject();
@@ -16,20 +16,20 @@ const createUser = async (data) => {
   }
 };
 
-/** @type {UserModule.UserRepository['findUsers']} */
-const findUsers = async (filter, projection = {}, options = {}) => {
+/** @type {UserModule.Repository['findUsers']} */
+export const findUsers = async (filter, projection = {}, options = {}) => {
   const users = await User.find(filter, projection, options);
   return users.map((it) => it?.toObject()).filter(Boolean);
 };
 
-/** @type {UserModule.UserRepository['findUserById']} */
-const findUserById = async (id) => {
+/** @type {UserModule.Repository['findUserById']} */
+export const findUserById = async (id) => {
   const user = await User.findById(id);
   return user?.toObject();
 };
 
-/** @type {UserModule.UserRepository['updateUserById']} */
-const updateUserById = async (id, data) => {
+/** @type {UserModule.Repository['updateUserById']} */
+export const updateUserById = async (id, data) => {
   const user = await User.findById(id);
   if (!user) {
     return null;
@@ -42,16 +42,8 @@ const updateUserById = async (id, data) => {
   return { old: oldUser, new: newUser.toObject() };
 };
 
-/** @type {UserModule.UserRepository['deleteUserById']} */
-const deleteUserById = async (id) => {
+/** @type {UserModule.Repository['deleteUserById']} */
+export const deleteUserById = async (id) => {
   const user = await User.findByIdAndDelete(id);
   return user?.toObject();
-};
-
-module.exports = {
-  createUser,
-  findUsers,
-  findUserById,
-  updateUserById,
-  deleteUserById,
 };

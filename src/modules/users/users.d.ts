@@ -1,16 +1,7 @@
 declare namespace UserModule {
-  import type {
-    Document,
-    Schema,
-    Model,
-    HydratedDocument,
-    ProjectionType,
-    QueryOptions,
-    ObjectId,
-    QueryFilter,
-  } from "mongoose";
+  import type { Schema, Model, HydratedDocument, ProjectionType, QueryOptions, QueryFilter } from "mongoose";
 
-  type User = {
+  type Entity = {
     id: string; // autogen
     userId: string;
     name: string;
@@ -22,69 +13,75 @@ declare namespace UserModule {
   };
 
   // Types
-  type UserIdParams = Pick<User, "userId">;
-  type IdParams = Pick<User, "id">;
-  type CreateUserDTO = Pick<User, "userId" | "name" | "email" | "password">;
-  type FindUsersQuery = Pick<User, "userId" | "name" | "email">;
-  type UpdateUserInfoDTO = Pick<User, "name" | "email">;
+  type UserIdParams = Pick<Entity, "userId">;
+  type IdParams = Pick<Entity, "id">;
+  type CreateUserDTO = Pick<Entity, "userId" | "name" | "email" | "password">;
+  type FindUsersQuery = Pick<Entity, "userId" | "name" | "email">;
+  type UpdateUserInfoDTO = Pick<Entity, "name" | "email">;
   type UpdateUserPermissionsDTO = {
-    add: User["permissions"];
-    remove: User["permissions"];
+    add: Entity["permissions"];
+    remove: Entity["permissions"];
   };
-  type UserResponse = Omit<User, "password">;
+  type UserResponse = Omit<Entity, "password">;
 
   // Repository
-  type UserSchema = Schema<User>;
-  type UserModel = Model<User>;
-  type UserDocument = HydratedDocument<User>;
-  interface UserRepository {
-    createUser(data: CreateUserDTO): Promise<User | null>;
+  type UserSchema = Schema<Entity>;
+  type UserModel = Model<Entity>;
+  type UserDocument = HydratedDocument<Entity>;
+  type Repository = {
+    createUser(data: CreateUserDTO): Promise<Entity | null>;
     findUsers(
-      filter: QueryFilter<User>,
-      projection?: ProjectionType<User>,
-      options?: QueryOptions<User>,
-    ): Promise<User[]>;
-    findUserById(id: string): Promise<User | null>;
-    updateUserById(id: string, data: Pratial<User>): Promise<{ old: User; new: User } | null>;
-    deleteUserById(id: string): Promise<User | null>;
-  }
+      filter: QueryFilter<Entity>,
+      projection?: ProjectionType<Entity>,
+      options?: QueryOptions<Entity>,
+    ): Promise<Entity[]>;
+    findUserById(id: string): Promise<Entity | null>;
+    updateUserById(id: string, data: Pratial<Entity>): Promise<{ old: Entity; new: Entity } | null>;
+    deleteUserById(id: string): Promise<Entity | null>;
+  };
 
   // Service
-  type ServiceDeps = { repository: UserRepository };
-  interface UserService {
-    createUser(deps: ServiceDeps): (data: CreateUserDTO) => Promise<User | null>;
-    findUsers(deps: ServiceDeps): (filter: FindUsersQuery) => Promise<User[]>;
-    findUserById(deps: ServiceDeps): (id: string) => Promise<User | null>;
-    updateUserInfo(deps: {
-      repository: UserRepository;
-    }): (uid: User["uid"], data: UpdateUserInfoDTO) => Promise<{ old?: User | null; new?: User | null }>;
-    updateUserPermissions(deps: {
-      repository: UserRepository;
-    }): (
-      uid: User["uid"],
+  type ServiceGenerator = {
+    createUser(repository: Repository): (data: CreateUserDTO) => Promise<Entity | null>;
+    findUsers(repository: Repository): (filter: FindUsersQuery) => Promise<Entity[]>;
+    findUserById(repository: Repository): (id: string) => Promise<Entity | null>;
+    updateUserInfo(
+      repository: Repository,
+    ): (uid: Entity["uid"], data: UpdateUserInfoDTO) => Promise<{ old?: Entity | null; new?: Entity | null }>;
+    updateUserPermissions(
+      repository: Repository,
+    ): (
+      uid: Entity["uid"],
       permsOperation: UpdateUserPermissionsDTO,
-    ) => Promise<{ old?: User | null; new?: User | null }>;
-    deleteUser(deps: ServiceDeps): (uid: User["uid"]) => Promise<User | null>;
-  }
+    ) => Promise<{ old?: Entity | null; new?: Entity | null }>;
+    deleteUser(repository: Repository): (uid: Entity["uid"]) => Promise<Entity | null>;
+  };
+  type Service = {
+    createUser: ReturnType<ServiceGenerator["createUser"]>;
+    findUsers: ReturnType<ServiceGenerator["findUsers"]>;
+    findUserById: ReturnType<ServiceGenerator["findUserById"]>;
+    updateUserInfo: ReturnType<ServiceGenerator["updateUserInfo"]>;
+    updateUserPermissions: ReturnType<ServiceGenerator["updateUserPermissions"]>;
+    deleteUser: ReturnType<ServiceGenerator["deleteUser"]>;
+  };
+  type ServiceBuilder = (repository: Repository) => Service;
 
   // Controller
-  type ControllerDeps<T> = { service: ReturnType<T> };
-  interface UserController {
-    createUser(
-      deps: ControllerDeps<UserService["createUser"]>,
-    ): APIRequestHandler<UserResponse, CreateUserDTO, null, null>;
-    findUsers(
-      deps: ControllerDeps<UserService["findUsers"]>,
-    ): APIRequestHandler<UserResponse[], null, FindUsersQuery, null>;
-    userProfile(
-      deps: ControllerDeps<UserService["findUserById"]>,
-    ): APIRequestHandler<UserResponse, null, null, IdParams>;
-    updateUserInfo(
-      deps: ControllerDeps<UserService["updateUserInfo"]>,
-    ): APIRequestHandler<UserResponse, UpdateUserInfoDTO, null, IdParams>;
-    updateUserPermissions(
-      deps: ControllerDeps<UserService["updateUserPermissions"]>,
-    ): APIRequestHandler<UserResponse, UpdateUserPermissionsDTO, null, IdParams>;
-    deleteUser(deps: ControllerDeps<UserService["deleteUser"]>): APIRequestHandler<UserResponse, null, null, IdParams>;
-  }
+  type ControllerGenerator = {
+    createUser(service: Service): APIRequestHandler<null, UserResponse, CreateUserDTO, null>;
+    findUsers(service: Service): APIRequestHandler<null, UserResponse[], null, FindUsersQuery>;
+    userProfile(service: Service): APIRequestHandler<IdParams, UserResponse, null, null>;
+    updateUserInfo(service: Service): APIRequestHandler<IdParams, UserResponse, UpdateUserInfoDTO, null>;
+    updateUserPermissions(service: Service): APIRequestHandler<IdParams, UserResponse, UpdateUserPermissionsDTO, null>;
+    deleteUser(service: Service): APIRequestHandler<IdParams, UserResponse, null, null>;
+  };
+  type Controller = {
+    createUser: ReturnType<ControllerGenerator["createUser"]>;
+    findUsers: ReturnType<ControllerGenerator["findUsers"]>;
+    userProfile: ReturnType<ControllerGenerator["userProfile"]>;
+    updateUserInfo: ReturnType<ControllerGenerator["updateUserInfo"]>;
+    updateUserPermissions: ReturnType<ControllerGenerator["updateUserPermissions"]>;
+    deleteUser: ReturnType<ControllerGenerator["deleteUser"]>;
+  };
+  type ControllerBuilder = (service: Service) => Controller;
 }

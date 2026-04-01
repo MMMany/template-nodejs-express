@@ -1,9 +1,10 @@
-const request = require("supertest");
-const express = require("express");
-const z = require("zod");
-const { omit } = require("lodash");
+import { jest } from "@jest/globals";
+import express from "express";
+import request from "supertest";
+import { z } from "zod";
+import { omit } from "lodash-es";
+import { validateBody, validateQuery, validateParams } from "#src/shared/middlewares/validator.js";
 
-const { validateBody, validateQuery, validateParams } = require("#/middlewares/validator");
 const idSchema = z.string().regex(/^[a-zA-Z0-9]{24}$/);
 const validator = {
   body1: validateBody(z.object({ name: z.string().nonempty(), email: z.email().nonempty() })),
@@ -28,17 +29,46 @@ const API = {
   QUERY2: "/test/validate-query-2",
 };
 
-app.post(API.BODY1, validator.body1, (req, res) => res.json(req.body));
-app.post(API.BODY2, validator.body2, (req, res) => res.json(req.body));
-app.get(API.PARAMS1, validator.params1, (req, res) => res.json(req.params));
-app.get(API.PARAMS2, validator.params2, (req, res) => res.json(req.params));
-app.get(API.QUERY1, validator.query1, (req, res) => res.json(req.query));
-app.get(API.QUERY2, validator.query2, (req, res) => res.json(req.query));
+app.post(
+  API.BODY1,
+  validator.body1,
+  /** @type {APIRequestHandler<null, {name: string, email: string}, {name: string, email:string}, null>} */
+  (req, res) => res.json(req.valid.body),
+);
+app.post(
+  API.BODY2,
+  validator.body2,
+  /** @type {APIRequestHandler<null, {name: string, email: string}, {name: string, email: string},null>} */
+  (req, res) => res.json(req.valid.body),
+);
+app.get(
+  API.PARAMS1,
+  validator.params1,
+  /** @type {APIRequestHandler<{id: string}, {id: string}, null, null>} */
+  (req, res) => res.json(req.valid.params),
+);
+app.get(
+  API.PARAMS2,
+  validator.params2,
+  /** @type {APIRequestHandler<{id: string}, {id: string}, null, null>} */
+  (req, res) => res.json(req.valid.params),
+);
+app.get(
+  API.QUERY1,
+  validator.query1,
+  /** @type {APIRequestHandler<null, {name: string, limit: number}, null, {name: string, limit: number}>} */
+  (req, res) => res.json(req.valid.query),
+);
+app.get(
+  API.QUERY2,
+  validator.query2,
+  /** @type {APIRequestHandler<null, {name: string, limit: number}, null, {name: string, limit: number}>} */
+  (req, res) => res.json(req.valid.query),
+);
 
 describe("Validator test", () => {
   afterEach(async () => {
-    jest.restoreAllMocks();
-    jest.resetModules();
+    jest.clearAllMocks();
   });
 
   describe("create validator", () => {

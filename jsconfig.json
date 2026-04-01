@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
     "checkJs": true,
-    "module": "commonjs",
+    "module": "nodenext",
     "target": "esnext",
     "lib": ["ESNext"],
     "types": ["node", "jest"],
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "baseUrl": ".",
     "allowJs": true,
     "skipLibCheck": true,
     "paths": {
-      "#/*": ["src/*"]
+      "#src/*": ["src/*"],
+      "#types/*": ["types/*"]
     }
   },
   "include": ["src/**/*", "tests/**/*", "types/**/*"],

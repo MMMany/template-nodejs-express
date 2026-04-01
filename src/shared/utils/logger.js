@@ -1,8 +1,7 @@
 /* istanbul ignore file */
-const { createLogger, format, transports } = require("winston");
-const util = require("util");
-
-const { IS_PRD, IS_TEST } = require("./constants");
+import { createLogger, format, transports } from "winston";
+import util from "util";
+import { IS_PRD, IS_TEST } from "./constants.js";
 
 const TEST_VERBOSE = process.env.TEST_VERBOSE === "true";
 
@@ -56,4 +55,4 @@ const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-module.exports = logger;
+export default logger;

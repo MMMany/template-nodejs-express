@@ -22,8 +22,9 @@ const config = {
     },
   },
   moduleNameMapper: {
-    "^#/(.*)$": "<rootDir>/src/$1",
+    "^#src/(.*)$": "<rootDir>/src/$1",
   },
+  transformIgnorePatterns: ["/node_modules/(?!lodash-es/)"],
 };
 
-module.exports = config;
+export default config;

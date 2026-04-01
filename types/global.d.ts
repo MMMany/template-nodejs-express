@@ -12,9 +12,15 @@ declare global {
 
   type APIResponse<resBody = any> = Response<resBody>;
 
-  type APIRequestHandler<resBody = any, reqBody = any, reqQuery = any, reqParmas = any> = (
-    req: Request<reqParmas, resBody, reqBody, reqQuery>,
+  type APIRequestHandler<reqParams = any, resBody = any, reqBody = any, reqQuery = any> = (
+    req: Request<reqParams, resBody, reqBody, reqQuery> & {
+      valid: {
+        body: reqBody;
+        params: reqParams;
+        query: reqQuery;
+      };
+    },
     res: Response<resBody>,
     next: NextFunction,
-  ) => void | Promise<void>;
+  ) => void | Promise<void> | any;
 }

@@ -13,4 +13,4 @@ const config = {
   arrowParens: "always",
 };
 
-module.exports = config;
+export default config;
