@@ -1,5 +1,5 @@
-import { IS_DEV } from "#src/shared/utils/constants.js";
-import logger from "#src/shared/utils/logger.js";
+import { IS_DEV } from "#shared/constants";
+import logger from "#shared/utils/logger";
 import { isPlainObject, merge } from "lodash-es";
 import { z } from "zod";
 
@@ -11,6 +11,9 @@ class ZodSchemaError extends Error {
   }
 }
 
+/**
+ * @param {any} obj
+ */
 function asZodType(obj) {
   if (obj instanceof z.ZodType) {
     return obj;

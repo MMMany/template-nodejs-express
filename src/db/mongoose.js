@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
-import logger from "#src/shared/utils/logger.js";
-import { IS_DEV, IS_TEST } from "#src/shared/utils/constants.js";
+import logger from "#shared/utils/logger";
+import { IS_DEV, IS_TEST } from "#shared/constants";
 
 const host = process.env.MONGO_HOST;
 const port = process.env.MONGO_PORT;
 const dbName = process.env.MONGO_DBNAME;
+
 /* istanbul ignore if */
 if ([host, port, dbName].some((it) => !it)) {
   throw new Error("MONGO_HOST, MONGO_PORT, MONGO_DBNAME is not defined");
@@ -14,6 +15,9 @@ const uri = `mongodb://${host}:${port}/${dbName}`;
 
 let terminate = false;
 
+/**
+ * connect MongoDB
+ */
 export async function connectMongoose() {
   /* istanbul ignore if */
   if (IS_DEV) {
@@ -39,6 +43,9 @@ export async function connectMongoose() {
   }
 }
 
+/**
+ * disconnect MongoDB
+ */
 export async function disconnectMongoose() {
   terminate = true;
   await mongoose.disconnect();

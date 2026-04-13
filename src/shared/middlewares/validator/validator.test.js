@@ -3,7 +3,7 @@ import express from "express";
 import request from "supertest";
 import { z } from "zod";
 import { omit } from "lodash-es";
-import { validateBody, validateQuery, validateParams } from "#src/shared/middlewares/validator.js";
+import { validateBody, validateQuery, validateParams } from "./index.js";
 
 const idSchema = z.string().regex(/^[a-zA-Z0-9]{24}$/);
 const validator = {
@@ -76,7 +76,7 @@ describe("Validator test", () => {
       let pass;
       try {
         const validator = validateBody({ id: z.string() });
-        await validator(
+        validator(
           //@ts-ignore
           { body: { id: "test" } },
           null,
@@ -95,7 +95,7 @@ describe("Validator test", () => {
       let statusCode;
       try {
         const validator = validateBody(["unexpected"]);
-        await validator(
+        validator(
           //@ts-ignore
           { body: { id: z.string() } },
           //@ts-ignore

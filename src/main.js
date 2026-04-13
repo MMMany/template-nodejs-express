@@ -2,9 +2,9 @@ import "./config/dotenv.js";
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import logger from "./shared/utils/logger.js";
-import { IS_TEST } from "./shared/utils/constants.js";
-import { connectAllDb, closeAllDb } from "./db/setup.js";
+import logger from "#shared/utils/logger";
+import { IS_TEST } from "#shared/constants";
+import { connectAllDb, closeAllDb } from "#db/setup";
 
 export const app = express();
 
@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-import { router as usersRouter } from "./modules/users/users.module.js";
+import { router as usersRouter } from "#modules/users";
 app.use("/api/users", usersRouter);
 
 app.use((req, res) => {
@@ -35,6 +35,9 @@ if (!IS_TEST) {
       logger.debug(`Server is running on port ${PORT}`);
     });
 
+    /**
+     * @param {string} signal
+     */
     function gracefulShutdown(signal) {
       logger.debug(`Received ${signal}. Closing server...`);
       const shutdownTimeout = setTimeout(() => {

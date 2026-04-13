@@ -1,12 +1,43 @@
 import User from "./models/user.model.js";
-import logger from "#src/shared/utils/logger.js";
-import { IS_DEV } from "#src/shared/utils/constants.js";
+import logger from "#shared/utils/logger";
+import { IS_DEV } from "#shared/constants";
+import { omit } from "lodash-es";
 
-/** @type {UserModule.Repository['createUser']} */
+/**
+ * @typedef {import('./index.js').UserEntity} UserEntity
+ * @typedef {import('./models/user.model.js').UserDocument} UserDocument
+ * @typedef {import('./users.dto.js').CreateUserDTO} CreateUserDTO
+ * @typedef {import('./users.dto.js').UpdateUserInfoDTO & Partial<Pick<UserEntity, 'permissions'>>} UpdateUserDTO
+ * @typedef {import('mongoose').QueryFilter<UserEntity>} QueryFilter
+ * @typedef {import('mongoose').ProjectionType<UserEntity>} ProjectionType
+ * @typedef {import('mongoose').QueryOptions<UserEntity>} QueryOptions
+ */
+
+/**
+ * @typedef {object} UserRepository
+ * @property {(data: CreateUserDTO) => Promise<UserEntity | null>} createUser
+ * @property {(filter: QueryFilter, projection?: ProjectionType, options?: QueryOptions) => Promise<UserEntity[]>} findUsers
+ * @property {(id: string) => Promise<UserEntity | null>} findUserById
+ * @property {(id: string, data: UpdateUserDTO) => Promise<UserEntity | null>} updateUserById
+ * @property {(id: string) => Promise<UserEntity | null>} deleteUserById
+ */
+
+/**
+ * @param {UserDocument | null} doc
+ * @returns {UserEntity}
+ */
+const filterPrivacy = (doc) => {
+  const converted = doc?.toObject();
+  if (!converted) return null;
+  return omit(converted, ["password"]);
+};
+
+/** @type {UserRepository['createUser']} */
 export const createUser = async (data) => {
   try {
+    /** @type {UserDocument} */
     const user = await User.create(data);
-    return user?.toObject();
+    return filterPrivacy(user);
   } catch (err) /* istanbul ignore next */ {
     logger.error(`failed creating new item : ${err.message}`);
     if (IS_DEV) {
@@ -16,34 +47,37 @@ export const createUser = async (data) => {
   }
 };
 
-/** @type {UserModule.Repository['findUsers']} */
+/** @type {UserRepository['findUsers']} */
 export const findUsers = async (filter, projection = {}, options = {}) => {
+  /** @type {UserDocument[]} */
   const users = await User.find(filter, projection, options);
-  return users.map((it) => it?.toObject()).filter(Boolean);
+  return users.map((it) => filterPrivacy(it)).filter(Boolean);
 };
 
-/** @type {UserModule.Repository['findUserById']} */
+/** @type {UserRepository['findUserById']} */
 export const findUserById = async (id) => {
+  /** @type {UserDocument} */
   const user = await User.findById(id);
-  return user?.toObject();
+  return filterPrivacy(user);
 };
 
-/** @type {UserModule.Repository['updateUserById']} */
+/** @type {UserRepository['updateUserById']} */
 export const updateUserById = async (id, data) => {
+  /** @type {UserDocument} */
   const user = await User.findById(id);
   if (!user) {
     return null;
   }
-  const oldUser = structuredClone(user.toObject());
   Object.entries(data).forEach(([k, v]) => {
     user[k] = v;
   });
   const newUser = await user.save();
-  return { old: oldUser, new: newUser.toObject() };
+  return filterPrivacy(newUser);
 };
 
-/** @type {UserModule.Repository['deleteUserById']} */
+/** @type {UserRepository['deleteUserById']} */
 export const deleteUserById = async (id) => {
+  /** @type {UserDocument} */
   const user = await User.findByIdAndDelete(id);
-  return user?.toObject();
+  return filterPrivacy(user);
 };

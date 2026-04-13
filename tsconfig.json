@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    /* 1. 기본 동작 설정 (가장 중요) */
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true, // 🌟 추가됨: TS 엔진이 JS를 변환하여 덮어쓰지 않고 '검사'만 하도록 지시합니다.
+
+    /* 2. 모듈 및 타겟 환경 (기존 ESM 유지) */
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "lib": ["ESNext"],
+
+    /* 3. 타입 및 기타 유틸리티 */
+    "types": ["node", "jest"],
+    "skipLibCheck": true,
+    "resolveJsonModule": true, // 🌟 추가됨: 백엔드에서 package.json 등 .json 파일을 import 할 때 에러를 방지합니다.
+    // "noImplicitAny": true, // tsc 타입체크 엄격 모드 (jsdoc 안넣은건 다 걸림)
+
+    /* 4. 경로 별칭 (Alias) */
+    "baseUrl": ".",
+    "paths": {
+      "#app": ["src/main.js"],
+      "db/setup": ["src/db/setup.js"],
+      "db/mongoose": ["src/db/mongoose.js"],
+      "#shared/constants": ["src/shared/constants.js"],
+
+      // 🌟 개선됨: JS 파일뿐만 아니라, 추후 작성할지도 모르는 타입 정의(.d.ts) 파일도 IDE가 찾을 수 있도록 배열에 추가
+      "#modules/*": ["src/modules/*/index.js", "src/modules/*/index.d.ts"],
+      "#shared/*": ["src/shared/*/index.js", "src/shared/*/index.d.ts"]
+    }
+  },
+  "include": ["src/**/*", "tests/**/*", "types/**/*"],
+  "exclude": [
+    "node_modules",
+    "dist", // 빌드 결과물 폴더가 있다면 제외하는 것이 좋습니다.
+    "coverage" // Jest 커버리지 리포트 폴더도 제외합니다.
+  ]
+}

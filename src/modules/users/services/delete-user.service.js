@@ -1,5 +1,16 @@
-/** @type {UserModule.ServiceGenerator['deleteUser']} */
-export const deleteUser = (repository) => async (uid) => {
-  const result = await repository.deleteUserById(uid);
-  return result;
-};
+/**
+ * @typedef {import('../users.repository.js').UserRepository} UserRepository
+ */
+
+/**
+ * @param {UserRepository} repository
+ */
+export const deleteUser =
+  (repository) =>
+  /**
+   * @param {string} id
+   */
+  async (id) => {
+    const result = await repository.deleteUserById(id);
+    return result;
+  };

@@ -1,19 +1,24 @@
 import { jest } from "@jest/globals";
 import request from "supertest";
-import { app } from "#src/main.js";
-import { connectAllDb, closeAllDb } from "#src/db/setup.js";
-import User from "#src/modules/users/models/user.model.js";
+import { app } from "#app";
+import { connectAllDb, closeAllDb } from "#db/setup";
+import User from "./models/user.model.js";
+
+/**
+ * @typedef {import('./index.js').UserEntity} UserEntity
+ * @typedef {import('./users.dto.js').CreateUserDTO} CreateUserDTO
+ */
 
 describe("Users module test", () => {
   const ctx = {
-    /** @type {UserModule.CreateUserDTO} */
+    /** @type {CreateUserDTO} */
     baseDTO: {
       userId: "api-test",
       name: "API Tester",
       password: "password",
       email: "api-tester@sample.com",
     },
-    /** @type {UserModule.UserResponse} */
+    /** @type {UserEntity} */
     userData: null,
   };
 
@@ -113,7 +118,7 @@ describe("Users module test", () => {
         email: ctx.baseDTO.email,
       };
       const response = await request(app).patch(`/api/users/${id}`).send(payload);
-      expect(response.status).toBe(304);
+      expect(response.status).toBe(200);
     });
 
     it("abnormal case: invalid id", async () => {
@@ -185,7 +190,7 @@ describe("Users module test", () => {
         .send({
           remove: ["perm-999"],
         });
-      expect(response.status).toBe(304);
+      expect(response.status).toBe(200);
     });
 
     it("abnormal case: no data", async () => {

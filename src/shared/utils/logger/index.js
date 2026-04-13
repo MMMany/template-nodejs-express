@@ -1,7 +1,17 @@
 /* istanbul ignore file */
 import { createLogger, format, transports } from "winston";
 import util from "util";
-import { IS_PRD, IS_TEST } from "./constants.js";
+import { IS_PRD, IS_TEST } from "#shared/constants";
+
+/**
+ * @typedef {import('winston').Logform.TransformableInfo} TransformableInfo
+ * @typedef {TransformableInfo & {
+ *  timestamp: string;
+ *  name: string;
+ *  message: string;
+ *  stack: string;
+ * }} FormatPrintfInfo
+ */
 
 const TEST_VERBOSE = process.env.TEST_VERBOSE === "true";
 
@@ -22,7 +32,9 @@ const logger = createLogger({
     format.colorize(),
     format.timestamp({ format: "YYYY-MM-DD HH:mm:ss.SSS" }),
     format.printf(
-      /** @param {import('winston').Logform.TransformableInfo & { timestamp: string, name: string, message: string, stack: string }} info */
+      /**
+       * @param {FormatPrintfInfo} info
+       */
       ({ timestamp, level, name, message, stack, ...others }) => {
         // eslint-disable-next-line no-control-regex
         const plainLevel = level.replaceAll(/\u001b\[.*?m/g, "");

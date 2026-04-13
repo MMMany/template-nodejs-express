@@ -1,8 +1,25 @@
-import { isEmpty, isEqual } from "lodash-es";
-import logger from "#src/shared/utils/logger.js";
-import { IS_DEV } from "#src/shared/utils/constants.js";
+/**
+ * @typedef {import("./services/users.provider.js").UserService} UserService
+ * @typedef {import('./index.js').UserEntity} UserEntity
+ * @typedef {import('./users.dto.js').CreateUserDTO} CreateUserDTO
+ * @typedef {import('./users.dto.js').UpdateUserInfoDTO} UpdateUserInfoDTO
+ * @typedef {import('./users.dto.js').UpdateUserPermissionsDTO} UpdateUserPermissionsDTO
+ * @typedef {import('./users.dto.js').FindUsersQueryDTO} FindUsersQueryDTO
+ * @typedef {import('./users.dto.js').IdParams} IdParams
+ */
 
-/** @type {UserModule.ControllerGenerator['createUser']} */
+/**
+ * @typedef {ReturnType<buildUserController>} UserController
+ */
+
+import { isEmpty, isEqual } from "lodash-es";
+import logger from "#shared/utils/logger";
+import { IS_DEV } from "#shared/constants";
+
+/**
+ * @param {UserService} service
+ * @returns {APIRequestHandler<null, UserEntity, CreateUserDTO, null>}
+ */
 const createUser = (service) => async (req, res) => {
   try {
     const data = req.valid.body;
@@ -22,7 +39,10 @@ const createUser = (service) => async (req, res) => {
   }
 };
 
-/** @type {UserModule.ControllerGenerator['findUsers']} */
+/**
+ * @param {UserService} service
+ * @returns {APIRequestHandler<null, UserEntity[], null, FindUsersQueryDTO>}
+ */
 const findUsers = (service) => {
   return async (req, res) => {
     try {
@@ -44,7 +64,10 @@ const findUsers = (service) => {
   };
 };
 
-/** @type {UserModule.ControllerGenerator['userProfile']} */
+/**
+ * @param {UserService} service
+ * @returns {APIRequestHandler<IdParams, UserEntity, null, null>}
+ */
 const userProfile = (service) => {
   return async (req, res) => {
     try {
@@ -66,7 +89,10 @@ const userProfile = (service) => {
   };
 };
 
-/** @type {UserModule.ControllerGenerator['updateUserInfo']} */
+/**
+ * @param {UserService} service
+ * @returns {APIRequestHandler<IdParams, UserEntity, UpdateUserInfoDTO, null>}
+ */
 const updateUserInfo = (service) => {
   return async (req, res) => {
     try {
@@ -84,12 +110,7 @@ const updateUserInfo = (service) => {
         logger.warn(`User "${id}" not found`);
         res.sendStatus(404);
       } else {
-        const notModified = isEqual(result.old, result.new);
-        if (notModified) {
-          res.sendStatus(304);
-        } else {
-          res.json(result.new);
-        }
+        res.json(result);
       }
     } catch (err) /* istanbul ignore next */ {
       logger.error(`Error updating user info : ${err.message}`);
@@ -101,7 +122,10 @@ const updateUserInfo = (service) => {
   };
 };
 
-/** @type {UserModule.ControllerGenerator['updateUserPermissions']} */
+/**
+ * @param {UserService} service
+ * @returns {APIRequestHandler<IdParams, UserEntity, UpdateUserPermissionsDTO, null>}
+ */
 const updateUserPermissions = (service) => {
   return async (req, res) => {
     try {
@@ -123,12 +147,7 @@ const updateUserPermissions = (service) => {
         logger.warn(`User "${id}" not found`);
         res.sendStatus(404);
       } else {
-        const notModified = isEqual(result.old?.permissions, result.new?.permissions);
-        if (notModified) {
-          res.sendStatus(304);
-        } else {
-          res.json(result.new);
-        }
+        res.json(result);
       }
     } catch (err) /* istanbul ignore next */ {
       logger.error(`Error updating user permissions : ${err.message}`);
@@ -140,7 +159,10 @@ const updateUserPermissions = (service) => {
   };
 };
 
-/** @type {UserModule.ControllerGenerator['deleteUser']} */
+/**
+ * @param {UserService} service
+ * @returns {APIRequestHandler<IdParams, UserEntity, null, null>}
+ */
 const deleteUser = (service) => {
   return async (req, res) => {
     try {
@@ -162,7 +184,9 @@ const deleteUser = (service) => {
   };
 };
 
-/** @type {UserModule.ControllerBuilder} */
+/**
+ * @param {UserService} service
+ */
 export const buildUserController = (service) => ({
   createUser: createUser(service),
   findUsers: findUsers(service),

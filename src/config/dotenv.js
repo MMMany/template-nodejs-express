@@ -7,6 +7,9 @@ const requiredEnv = ["PORT", "MONGO_HOST", "MONGO_PORT", "MONGO_DBNAME"];
 dotenvSetup();
 
 /* istanbul ignore next */
+/**
+ * setup environments using 'dotenv' & 'dotenv-expand'
+ */
 function dotenvSetup() {
   if (!process.env.NODE_ENV) {
     throw new Error("NODE_ENV is not defined");

@@ -11,7 +11,7 @@ import { buildUserController } from "./users.controller.js";
 const service = buildUserService(repository);
 const controller = buildUserController(service);
 
-import { validateBody, validateQuery, validateParams } from "#src/shared/middlewares/validator.js";
+import { validateBody, validateQuery, validateParams } from "#shared/middlewares/validator";
 import { createUserDTO, findUsersQuery, updateUserInfoDTO, idSchema, updateUserPermissionsDTO } from "./users.dto.js";
 const idParamsSchema = z.object({ id: idSchema });
 const validator = {

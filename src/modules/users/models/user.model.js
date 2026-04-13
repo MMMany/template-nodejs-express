@@ -1,5 +1,13 @@
 import mongoose from "mongoose";
-import { IS_PRD } from "#src/shared/utils/constants.js";
+import { IS_PRD } from "#shared/constants";
+
+/**
+ * @typedef {import('../index.js').UserEntity} UserEntity
+ * @typedef {UserEntity & { password: string }} UserRawDocument
+ * @typedef {import('mongoose').Schema<UserRawDocument>} UserSchema
+ * @typedef {import('mongoose').Model<UserRawDocument>} UserModel
+ * @typedef {import('mongoose').HydratedDocument<UserRawDocument>} UserDocument
+ */
 
 const transformOptions = {
   virtuals: true,
@@ -11,7 +19,7 @@ const transformOptions = {
   },
 };
 
-/** @type {UserModule.UserSchema} */
+/** @type {UserSchema} */
 const schema = new mongoose.Schema(
   {
     userId: { type: String, required: true, unique: true },
@@ -32,7 +40,7 @@ const schema = new mongoose.Schema(
 );
 schema.index({ name: 1 });
 
-/** @type {UserModule.UserModel} */
+/** @type {UserModel} */
 const User = mongoose.models.User || mongoose.model("User", schema);
 
 export default User;
