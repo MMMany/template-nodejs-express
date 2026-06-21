@@ -33,7 +33,7 @@ const validateAuth = (...allowed) => {
     } catch (err) {
       res.clearCookie(process.env.AUTH_REFRESH_COOKIE_NAME);
       if (isHttpError(err)) {
-        res.status(err.status).json(formatFail(err.message));
+        res.status(err.statusCode).json(formatFail(err.message));
       } else {
         res.status(500).json(formatError("Failed auth"));
       }

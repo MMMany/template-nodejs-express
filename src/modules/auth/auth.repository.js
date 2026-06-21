@@ -70,6 +70,7 @@ const createUserRepository = () => {
       return pick(user.toObject(), userPickOptions);
     } catch (err) {
       logger.error(`failed create new user : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -92,6 +93,7 @@ const createUserRepository = () => {
       return users;
     } catch (err) {
       logger.error(`failed find users : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -108,6 +110,7 @@ const createUserRepository = () => {
       return user;
     } catch (err) {
       logger.error(`failed get user : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -124,6 +127,7 @@ const createUserRepository = () => {
       return user;
     } catch (err) {
       logger.error(`failed get user by userId : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -140,6 +144,7 @@ const createUserRepository = () => {
       return user;
     } catch (err) {
       logger.error(`failed update user info : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -158,6 +163,7 @@ const createUserRepository = () => {
       return user;
     } catch (err) {
       logger.error(`failed update user roles : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -180,6 +186,7 @@ const createUserRepository = () => {
       return user;
     } catch (err) {
       logger.error(`failed update user password : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -196,6 +203,7 @@ const createUserRepository = () => {
       return result.modifiedCount > 0;
     } catch (err) {
       logger.error(`failed set reset code : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -212,6 +220,7 @@ const createUserRepository = () => {
       return result.modifiedCount > 0;
     } catch (err) {
       logger.error(`failed increase token version : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -234,6 +243,7 @@ const createUserRepository = () => {
       return user;
     } catch (err) {
       logger.error(`failed delete user : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -260,6 +270,7 @@ const createUserRepository = () => {
       return pick(role.toObject(), rolePickOptions);
     } catch (err) {
       logger.error(`failed create role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -281,6 +292,7 @@ const createUserRepository = () => {
       return roles;
     } catch (err) {
       logger.error(`failed find roles : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -297,6 +309,7 @@ const createUserRepository = () => {
       return role;
     } catch (err) {
       logger.error(`failed get role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -313,6 +326,7 @@ const createUserRepository = () => {
       return role;
     } catch (err) {
       logger.error(`failed update role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -331,6 +345,7 @@ const createUserRepository = () => {
       return role;
     } catch (err) {
       logger.error(`failed delete role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }

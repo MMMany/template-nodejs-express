@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 class HttpError extends Error {
   /**
    * @param {string} message

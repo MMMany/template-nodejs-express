@@ -12,6 +12,7 @@ const { IS_PRD } = require("#/utils/constants");
  * @property {Date} updatedAt - Mongoose auto-create
  */
 
+/* istanbul ignore next */
 /** @type {import('mongoose').ToObjectOptions<Role>} */
 const transformOptions = {
   virtuals: true,

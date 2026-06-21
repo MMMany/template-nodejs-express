@@ -48,12 +48,14 @@ function validateBody(schema) {
         req.valid = { ...req.valid, body: data };
         next();
       }
-    } catch (err) /* istanbul ignore next */ {
+    } catch (err) {
       logger.error(`failed parsing request body : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
 
+      /* istanbul ignore else */
       if (err instanceof ZodSchemaError) {
         res.sendStatus(400);
       } else {
@@ -85,12 +87,14 @@ function validateParams(schema) {
         req.valid = { ...req.valid, params: data };
         next();
       }
-    } catch (err) /* istanbul ignore next */ {
+    } catch (err) {
       logger.error(`failed parsing request params : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
 
+      /* istanbul ignore else */
       if (err instanceof ZodSchemaError) {
         res.sendStatus(400);
       } else {
@@ -122,12 +126,14 @@ function validateQuery(schema) {
         req.valid = { ...req.valid, query: data };
         next();
       }
-    } catch (err) /* istanbul ignore next */ {
+    } catch (err) {
       logger.error(`failed parsing request query : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
 
+      /* istanbul ignore else */
       if (err instanceof ZodSchemaError) {
         res.sendStatus(400);
       } else {

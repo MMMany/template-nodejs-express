@@ -30,7 +30,7 @@ app.use((req, res) => {
 
 const { connectAllDb, closeAllDb } = require("./db");
 
-/* istanbul ignore if */
+/* istanbul ignore next */
 if (!IS_TEST) {
   connectAllDb().then(() => {
     const server = app.listen(PORT, () => {

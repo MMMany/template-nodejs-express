@@ -4,7 +4,11 @@ const configPrettier = require("eslint-config-prettier");
 const pluginJest = require("eslint-plugin-jest");
 const pluginJsdoc = require("eslint-plugin-jsdoc");
 
+/** @type {import("eslint").Linter.Config[]} */
 module.exports = [
+  {
+    ignores: ["node_modules/**", "coverage/**"],
+  },
   js.configs.recommended,
   pluginJsdoc.configs["flat/recommended"],
   {

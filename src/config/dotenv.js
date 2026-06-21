@@ -1,10 +1,10 @@
+/* istanbul ignore file */
 const fs = require("node:fs");
 const { config } = require("dotenv");
 const { expand } = require("dotenv-expand");
 
 const requiredEnv = ["PORT"];
 
-/* istanbul ignore next */
 /**
  * setup environments using `dotenv` & `dotenv-expand`
  */

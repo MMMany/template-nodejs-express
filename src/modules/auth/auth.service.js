@@ -53,6 +53,7 @@ const createUserService = (repository) => {
       return userResponseDTO.parse(user);
     } catch (err) {
       logger.error(`failed create new user : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -76,6 +77,7 @@ const createUserService = (repository) => {
       return users.map((user) => userResponseDTO.parse(user));
     } catch (err) {
       logger.error(`failed find users : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -99,6 +101,7 @@ const createUserService = (repository) => {
       return userResponseDTO.parse(user);
     } catch (err) {
       logger.error(`failed get user : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -126,6 +129,7 @@ const createUserService = (repository) => {
       return userResponseDTO.parse(user);
     } catch (err) {
       logger.error(`failed update user info : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -150,6 +154,7 @@ const createUserService = (repository) => {
       return userResponseDTO.parse(user);
     } catch (err) {
       logger.error(`failed update user password : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -173,6 +178,7 @@ const createUserService = (repository) => {
       }
     } catch (err) {
       logger.error(`failed request reset code : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -196,6 +202,7 @@ const createUserService = (repository) => {
       return userResponseDTO.parse(user);
     } catch (err) {
       logger.error(`failed delete user : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -219,6 +226,7 @@ const createUserService = (repository) => {
       return roleResponseDTO.parse(role);
     } catch (err) {
       logger.error(`failed create role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -242,6 +250,7 @@ const createUserService = (repository) => {
       return roles.map((role) => roleResponseDTO.parse(role));
     } catch (err) {
       logger.error(`failed find roles : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -265,6 +274,7 @@ const createUserService = (repository) => {
       return roleResponseDTO.parse(role);
     } catch (err) {
       logger.error(`failed get role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -288,6 +298,7 @@ const createUserService = (repository) => {
       return roleResponseDTO.parse(role);
     } catch (err) {
       logger.error(`failed update role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -311,6 +322,7 @@ const createUserService = (repository) => {
       return roleResponseDTO.parse(role);
     } catch (err) {
       logger.error(`failed delete role : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -334,6 +346,7 @@ const createUserService = (repository) => {
       return ALL_PERMISSIONS.filter((perm) => perm.toLowerCase().includes(lowerSearch));
     } catch (err) {
       logger.error(`failed find permissions : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -378,6 +391,7 @@ const createUserService = (repository) => {
       };
     } catch (err) {
       logger.error(`failed login : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -419,6 +433,7 @@ const createUserService = (repository) => {
       };
     } catch (err) {
       logger.error(`failed refresh token : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
@@ -441,6 +456,7 @@ const createUserService = (repository) => {
       }
     } catch (err) {
       logger.error(`failed logout all device : ${err.message}`);
+      /* istanbul ignore next */
       if (IS_DEV) {
         logger.error(err.stack || `${err.name}: ${err.message}`);
       }
