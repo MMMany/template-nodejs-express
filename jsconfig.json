@@ -1,18 +1,30 @@
 {
   "compilerOptions": {
-    "checkJs": true,
+    "useUnknownInCatchVariables": false,
+
+    /* 1. 기본 동작 설정 (가장 중요) */
+    "checkJs": false,
+    "allowJs": true,
+
+    /* 2. 모듈 및 타겟 환경 */
     "module": "commonjs",
+    "moduleResolution": "node",
     "target": "esnext",
     "lib": ["ESNext"],
+
+    /* 3. 타입 및 기타 유틸리티 */
     "types": ["node", "jest"],
-    "moduleResolution": "node",
-    "baseUrl": ".",
-    "allowJs": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+
+    /* 4. 경로 별칭 (Alias) */
+    "baseUrl": ".",
     "paths": {
-      "#/*": ["src/*"]
+      "#/*": ["src/*"],
+      "#modules/*": ["src/modules/*"],
+      "#shared/*": ["src/shared/*"]
     }
   },
   "include": ["src/**/*", "tests/**/*", "types/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "coverage"]
 }

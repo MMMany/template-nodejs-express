@@ -1,5 +1,4 @@
-const { dotenvSetup } = require("./config/dotenv");
-dotenvSetup();
+require("./config/dotenv");
 
 const express = require("express");
 const cors = require("cors");
@@ -22,7 +21,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/api/users", require("./modules/users").router);
+app.use("/api/users", require("./modules/auth").router);
 
 app.use((req, res) => {
   logger.warn(`Unknown request :: ${req.method} ${req.url} from ${req.ip}`);
@@ -38,6 +37,10 @@ if (!IS_TEST) {
       logger.debug(`Server is running on port ${PORT}`);
     });
 
+    /**
+     *
+     * @param {string} signal
+     */
     function gracefulShutdown(signal) {
       logger.debug(`Received ${signal}. Closing server...`);
       const shutdownTimeout = setTimeout(() => {

@@ -13,6 +13,7 @@
   "eslint.validate": ["javascript"],
 
   // JavaScript Specific Settings
-  "javascript.suggestionActions.enabled": false,
-  "javascript.validate.enable": true
+  "js.suggestionActions.enabled": false,
+  "js.validate.enable": true,
+  "ts.validate.enable": false
 }

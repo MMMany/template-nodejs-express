@@ -2,16 +2,20 @@ const globals = require("globals");
 const js = require("@eslint/js");
 const configPrettier = require("eslint-config-prettier");
 const pluginJest = require("eslint-plugin-jest");
+const pluginJsdoc = require("eslint-plugin-jsdoc");
 
 module.exports = [
   js.configs.recommended,
-  configPrettier,
+  pluginJsdoc.configs["flat/recommended"],
   {
-    files: ["*.js"],
+    files: ["**/*.js"],
     languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "commonjs",
-      globals: { ...globals.node, ...globals.worker },
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        ...globals.node,
+        ...globals.es2021,
+      },
     },
     rules: {
       "no-unused-vars": [
@@ -23,35 +27,22 @@ module.exports = [
         },
       ],
       "no-console": "off",
+      "jsdoc/require-description": "off",
+      "jsdoc/require-param-description": "off",
+      "jsdoc/require-returns-description": "off",
+      "jsdoc/reject-any-type": "off",
+      "jsdoc/require-returns": "off",
+      "jsdoc/no-undefined-types": "off",
+      "jsdoc/require-property-description": "off",
     },
   },
   {
-    files: ["src/**/*.js"],
-    languageOptions: {
-      ecmaVersion: 2022,
-      sourceType: "commonjs",
-      globals: { ...globals.node, ...globals.worker },
-    },
-    rules: {
-      "no-unused-vars": [
-        "error",
-        {
-          varsIgnorePattern: "^_",
-          argsIgnorePattern: "^_",
-          caughtErrorsIgnorePattern: "^_",
-        },
-      ],
-      "no-console": "off",
-    },
-  },
-  {
-    files: ["tests/**/*.js"],
+    files: ["tests/**/*.js", "src/**/*.test.js"],
     plugins: {
       jest: pluginJest,
     },
     languageOptions: {
       globals: {
-        ...globals.node,
         ...pluginJest.environments.globals.globals,
       },
     },
@@ -63,4 +54,5 @@ module.exports = [
       "jest/valid-expect": "error",
     },
   },
+  configPrettier,
 ];

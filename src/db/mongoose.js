@@ -15,6 +15,9 @@ const uri = `mongodb://${host}:${port}/${dbName}`;
 
 let terminate = false;
 
+/**
+ * setup mongoose connection
+ */
 async function connectMongoose() {
   /* istanbul ignore if */
   if (IS_DEV) {
@@ -40,6 +43,9 @@ async function connectMongoose() {
   }
 }
 
+/**
+ * disconnect mongoose connection
+ */
 async function disconnectMongoose() {
   terminate = true;
   await mongoose.disconnect();

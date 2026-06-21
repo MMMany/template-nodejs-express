@@ -5,12 +5,17 @@ const z = require("zod");
 
 /* istanbul ignore next */
 class ZodSchemaError extends Error {
+  /** @param {string} message */
   constructor(message) {
     super(message);
     this.name = "ZodSchemaError";
   }
 }
 
+/**
+ * convert plain object as ZodType
+ * @param {z.ZodType | object} obj
+ */
 function asZodType(obj) {
   if (obj instanceof z.ZodType) {
     return obj;
@@ -21,6 +26,10 @@ function asZodType(obj) {
   }
 }
 
+/**
+ * validate `req.body`
+ * @param {z.ZodObject | object} schema
+ */
 function validateBody(schema) {
   /** @type {APIRequestHandler} */
   return (req, res, next) => {
@@ -30,12 +39,13 @@ function validateBody(schema) {
         logger.warn(`invalid body :`, error.message);
         res.sendStatus(400);
       } else {
-        Object.defineProperty(req, "body", {
-          value: data,
-          writable: true,
-          enumerable: true,
-          configurable: true,
-        });
+        // Object.defineProperty(req, "body", {
+        //   value: data,
+        //   writable: true,
+        //   enumerable: true,
+        //   configurable: true,
+        // });
+        req.valid = { ...req.valid, body: data };
         next();
       }
     } catch (err) /* istanbul ignore next */ {
@@ -53,6 +63,10 @@ function validateBody(schema) {
   };
 }
 
+/**
+ * validate `req.params`
+ * @param {z.ZodObject | object} schema
+ */
 function validateParams(schema) {
   /** @type {APIRequestHandler} */
   return (req, res, next) => {
@@ -62,12 +76,13 @@ function validateParams(schema) {
         logger.warn(`invalid params :`, error.message);
         res.sendStatus(400);
       } else {
-        Object.defineProperty(req, "params", {
-          value: data,
-          writable: true,
-          enumerable: true,
-          configurable: true,
-        });
+        // Object.defineProperty(req, "params", {
+        //   value: data,
+        //   writable: true,
+        //   enumerable: true,
+        //   configurable: true,
+        // });
+        req.valid = { ...req.valid, params: data };
         next();
       }
     } catch (err) /* istanbul ignore next */ {
@@ -85,6 +100,10 @@ function validateParams(schema) {
   };
 }
 
+/**
+ * validate `req.query`
+ * @param {z.ZodObject | object} schema
+ */
 function validateQuery(schema) {
   /** @type {APIRequestHandler} */
   return (req, res, next) => {
@@ -94,12 +113,13 @@ function validateQuery(schema) {
         logger.warn(`invalid query :`, error.message);
         res.sendStatus(400);
       } else {
-        Object.defineProperty(req, "query", {
-          value: data,
-          writable: true,
-          enumerable: true,
-          configurable: true,
-        });
+        // Object.defineProperty(req, "query", {
+        //   value: data,
+        //   writable: true,
+        //   enumerable: true,
+        //   configurable: true,
+        // });
+        req.valid = { ...req.valid, query: data };
         next();
       }
     } catch (err) /* istanbul ignore next */ {

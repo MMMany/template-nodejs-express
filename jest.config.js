@@ -6,7 +6,7 @@
  */
 const config = {
   testEnvironment: "node",
-  testMatch: ["<rootDir>/tests/**/*.test.js"],
+  testMatch: ["<rootDir>/src/**/*.test.js", "<rootDir>/tests/**/*.test.js"],
   testPathIgnorePatterns: ["/node_modules/"],
   testTimeout: 20000,
   verbose: true,
@@ -23,6 +23,8 @@ const config = {
   },
   moduleNameMapper: {
     "^#/(.*)$": "<rootDir>/src/$1",
+    "^#modules/(.*)$": "<rootDir>/src/modules/$1",
+    "^#shared/(.*)$": "<rootDir>/src/shared/$1",
   },
 };
 
